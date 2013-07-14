@@ -891,6 +891,19 @@ int ssh_analyze_banner(ssh_session session, int server, int *ssh1, int *ssh2) {
 #define CLOCK CLOCK_REALTIME
 #endif
 
+#ifdef __APPLE__
+// from: https://github.com/250bpm/nanomsg/pull/11/files
+#define CLOCK_MONOTONIC 0
+int clock_gettime(int foo, struct timespec *ts)
+{
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  ts->tv_sec = tv.tv_sec;
+  ts->tv_nsec = tv.tv_usec * 1000;
+  return (0);
+}
+#endif
+
 /**
  * @internal
  * @brief initializes a timestamp to the current time
